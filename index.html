@@ -1,23 +1,36 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Мини форма</title>
-  <style>
-    body { font-family: Arial; padding: 30px; }
-    input { display: block; margin: 10px 0; padding: 8px; width: 250px; }
-    button { padding: 8px 14px; cursor: pointer; }
-  </style>
-</head>
-<body>
-  <h2>Мини форма</h2>
+<form id="myForm">
+  <input type="text" name="field1" placeholder="Поле 1" required>
+  <input type="text" name="field2" placeholder="Поле 2" required>
+  <button type="submit">Отправить</button>
+</form>
 
-  <form action="https://formspree.io/f/mblpnzzl" method="POST">
-    <input type="text" name="field1" placeholder="Поле 1" required>
-    <input type="text" name="field2" placeholder="Поле 2" required>
-    <button type="submit">Отправить</button>
-  </form>
+<p id="msg" style="color:green;"></p>
 
-  <p>После отправки данные придут тебе на почту 💌</p>
-</body>
-</html>
+<script>
+  const form = document.getElementById('myForm');
+  const msg = document.getElementById('msg');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault(); // отменяем стандартную отправку и редирект
+
+    const data = new FormData(form);
+    const action = "https://formspree.io/f/ВАШ_ID"; // <- сюда твой Formspree endpoint
+
+    fetch(action, {
+      method: "POST",
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(response => {
+      if (response.ok) {
+        msg.textContent = "Форма успешно отправлена! 💌";
+        form.reset(); // очищаем поля
+      } else {
+        msg.textContent = "Ошибка при отправке. Попробуйте ещё раз.";
+      }
+    })
+    .catch(() => {
+      msg.textContent = "Ошибка при отправке. Попробуйте ещё раз.";
+    });
+  });
+</script>
